@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Deactivate Account - Store{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<style>
+    .warning-panel {
+        background-color: rgba(255, 69, 58, 0.08);
+        border: 1px solid rgba(255, 69, 58, 0.15);
+        color: var(--error);
+        border-radius: var(--radius-md);
+        padding: 16px;
+        font-size: 13px;
+        margin-bottom: 24px;
+        line-height: 1.5;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card" style="max-width: 480px;">
+        <div class="auth-header">
+            <h2 class="auth-title" style="color: var(--error);">Deactivate Account</h2>
+            <p class="auth-subtitle">Confirm password to disable the account for @{{ profile.username }}.</p>
+        </div>
+
+        <div class="warning-panel">
+            <strong>Warning:</strong> Deactivating your account will immediately sign you out and make your profile inaccessible. You will be able to recover this profile later using your credentials.
+        </div>
+
+        <form method="post" action="{% url 'delete_view' pk=profile.pk %}" novalidate>
+            {% csrf_token %}
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="id_password" class="form-label">Verify Password</label>
+                <input type="password" name="password" id="id_password" 
+                       class="input-control" placeholder="Enter your current password" required>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn btn-danger" style="width: 100%; height: 46px;">
+                    Confirm Deactivation
+                </button>
+                <a href="{% url 'dashboard_view' %}" class="btn btn-secondary" style="width: 100%; height: 46px; text-align: center; display: inline-flex; align-items: center; justify-content: center;">
+                    Cancel and Return
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

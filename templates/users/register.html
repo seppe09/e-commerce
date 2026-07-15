@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Create Your Account - Store{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="auth-title">Create Account</h2>
+            <p class="auth-subtitle">Get started with a single account.</p>
+        </div>
+
+        <form method="post" action="{% url 'register_view' %}" novalidate>
+            {% csrf_token %}
+
+            <!-- First & Last Name Row -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_first_name" class="form-label">First Name</label>
+                    <input type="text" name="first_name" id="id_first_name" 
+                           class="input-control {% if errors.first_name %}error{% endif %}" 
+                           placeholder="John" value="{{ data.first_name|default:'' }}">
+                    {% if errors.first_name %}
+                        <span class="error-text">
+                            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            {{ errors.first_name }}
+                        </span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_last_name" class="form-label">Last Name</label>
+                    <input type="text" name="last_name" id="id_last_name" 
+                           class="input-control {% if errors.last_name %}error{% endif %}" 
+                           placeholder="Doe" value="{{ data.last_name|default:'' }}">
+                    {% if errors.last_name %}
+                        <span class="error-text">
+                            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            {{ errors.last_name }}
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Username -->
+            <div class="form-group">
+                <label for="id_username" class="form-label">Username</label>
+                <input type="text" name="username" id="id_username" 
+                       class="input-control {% if errors.username %}error{% endif %}" 
+                       placeholder="johndoe" value="{{ data.username|default:'' }}">
+                {% if errors.username %}
+                    <span class="error-text">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {{ errors.username }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Email Address -->
+            <div class="form-group">
+                <label for="id_email" class="form-label">Email address</label>
+                <input type="email" name="email" id="id_email" 
+                       class="input-control {% if errors.email %}error{% endif %}" 
+                       placeholder="name@example.com" value="{{ data.email|default:'' }}">
+                {% if errors.email %}
+                    <span class="error-text">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {{ errors.email }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="id_password" class="form-label">Password</label>
+                <input type="password" name="password" id="id_password" 
+                       class="input-control {% if errors.password %}error{% endif %}" 
+                       placeholder="Minimum 8 characters">
+                {% if errors.password %}
+                    <span class="error-text">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {{ errors.password }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+                <label for="id_confirm_password" class="form-label">Confirm Password</label>
+                <input type="password" name="confirm_password" id="id_confirm_password" 
+                       class="input-control {% if errors.password %}error{% endif %}" 
+                       placeholder="Re-enter password">
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary auth-submit-btn">Register</button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account? <a href="{% url 'login_view' %}">Sign in here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

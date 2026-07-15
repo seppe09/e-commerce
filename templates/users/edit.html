@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Profile - Store{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card" style="max-width: 500px;">
+        <div class="auth-header">
+            <h2 class="auth-title">Edit Profile</h2>
+            <p class="auth-subtitle">Update your personal account details.</p>
+        </div>
+
+        <form method="post" action="{% url 'edit_profile_view' %}" novalidate>
+            {% csrf_token %}
+
+            <!-- First & Last Name Row -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_first_name" class="form-label">First Name</label>
+                    <input type="text" name="first_name" id="id_first_name" 
+                           class="input-control {% if errors.first_name %}error{% endif %}" 
+                           placeholder="First Name" value="{{ data.first_name|default:'' }}">
+                    {% if errors.first_name %}
+                        <span class="error-text">
+                            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            {{ errors.first_name }}
+                        </span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_last_name" class="form-label">Last Name</label>
+                    <input type="text" name="last_name" id="id_last_name" 
+                           class="input-control {% if errors.last_name %}error{% endif %}" 
+                           placeholder="Last Name" value="{{ data.last_name|default:'' }}">
+                    {% if errors.last_name %}
+                        <span class="error-text">
+                            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            {{ errors.last_name }}
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Username -->
+            <div class="form-group">
+                <label for="id_username" class="form-label">Username</label>
+                <input type="text" name="username" id="id_username" 
+                       class="input-control {% if errors.username %}error{% endif %}" 
+                       placeholder="Username" value="{{ data.username|default:'' }}" required>
+                {% if errors.username %}
+                    <span class="error-text">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {{ errors.username }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Email Address -->
+            <div class="form-group">
+                <label for="id_email" class="form-label">Email Address</label>
+                <input type="email" name="email" id="id_email" 
+                       class="input-control {% if errors.email %}error{% endif %}" 
+                       placeholder="name@example.com" value="{{ data.email|default:'' }}" required>
+                {% if errors.email %}
+                    <span class="error-text">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {{ errors.email }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Action buttons -->
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 28px;">
+                <button type="submit" class="btn btn-primary auth-submit-btn" style="margin-top: 0; height: 46px;">
+                    Save Changes
+                </button>
+                <a href="{% url 'dashboard_view' %}" class="btn btn-secondary" style="text-align: center; display: inline-flex; align-items: center; justify-content: center; height: 46px;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

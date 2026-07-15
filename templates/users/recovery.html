@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Restore Profile - Store{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="auth-title">Account Recovery</h2>
+            <p class="auth-subtitle">Restore access to your deactivated store profile.</p>
+        </div>
+
+        {% if errors.non_field %}
+            <div class="alert alert-danger">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <span>{{ errors.non_field }}</span>
+            </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'recovery_view' %}" novalidate>
+            {% csrf_token %}
+
+            <!-- Username or Email Address -->
+            <div class="form-group">
+                <label for="id_username_or_email" class="form-label">Username or Email</label>
+                <input type="text" name="username_or_email" id="id_username_or_email" 
+                       class="input-control {% if errors.username_or_email %}error{% endif %}" 
+                       placeholder="name@example.com or username" value="{{ data.username_or_email|default:'' }}" required>
+                {% if errors.username_or_email %}
+                    <span class="error-text">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {{ errors.username_or_email }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="id_password" class="form-label">Password</label>
+                <input type="password" name="password" id="id_password" 
+                       class="input-control {% if errors.password %}error{% endif %}" 
+                       placeholder="Enter your password" required>
+                {% if errors.password %}
+                    <span class="error-text">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {{ errors.password }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Action buttons -->
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn btn-primary auth-submit-btn" style="margin-top: 0;">
+                    Restore Account
+                </button>
+                <a href="{% url 'login_view' %}" class="btn btn-secondary" style="text-align: center; display: inline-flex; align-items: center; justify-content: center; height: 46px;">
+                    Back to Sign In
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
