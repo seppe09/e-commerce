@@ -172,3 +172,5 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+.agents/*
+agy_session.txt

@@ -111,7 +111,6 @@ class UserEditView(LoginRequiredMixin, View):
         return redirect("dashboard_view")
 
 
-
 class UserLoginView(View):
     template_name = "users/login.html"
 
@@ -175,7 +174,7 @@ class UserLogoutView(View):
         return redirect("login_view")
     
 
-class UserDeletionView(LoginRequiredMixin, View):
+class UserAccountDeletionView(LoginRequiredMixin, View):
     login_url = 'login_view'
     template_name = "users/delete.html"
 
@@ -210,8 +209,7 @@ class UserDeletionView(LoginRequiredMixin, View):
         return redirect("dashboard_view")
 
 
-
-class UserRecoveryView(View):
+class UserAccountRecoveryView(View):
     template_name = "users/recovery.html"
 
     def get(self, request):
@@ -263,7 +261,7 @@ class UserRecoveryView(View):
         return render(request, self.template_name, context)
 
 
-class UserPasswordUpdate(LoginRequiredMixin, View):
+class UserPasswordUpdateView(LoginRequiredMixin, View):
     template_name = "users/password_change.html"
 
     def get(self, request):
