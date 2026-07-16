@@ -28,7 +28,7 @@
         <div class="stat-card">
             <div class="stat-header">
                 <span>Username</span>
-                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></circle><circle cx="12" cy="7" r="4"></circle></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             </div>
             <div class="stat-value" style="font-size: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                 @{{ user.username }}
@@ -90,54 +90,62 @@
                 </div>
                 <div class="info-item">
                     <div class="info-label">Date Registered</div>
-                    <div class="info-value">{{ user.date_joined|date:"F d, Y \a\t g:i A" }}</div>
+                    <div class="info-value">{{ user.date_joined|date:"F d, Y" }}</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">Last Login</div>
-                    <div class="info-value">{{ user.last_login|date:"F d, Y \a\t g:i A"|default:"First login session" }}</div>
+                    <div class="info-value">{{ user.last_login|date:"F d, Y | g:i A"|default:"First login session" }}</div>
                 </div>
             </div>
         </div>
 
         <!-- Sidebar Actions Panel -->
-        <div class="dashboard-panel" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px;">
-            <div class="action-box">
-                <div class="action-icon">
-                    <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
-                </div>
-                <h4 style="font-size: 16px; font-weight: 600; margin-top: 8px;">Session Management</h4>
-                <p style="font-size: 12px; color: var(--text-secondary); max-width: 180px;">Log out of your active browser session.</p>
-                <form action="{% url 'logout_view' %}" method="post" style="width: 100%; margin-top: 10px;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger" style="width: 100%; font-size: 13px; padding: 10px 16px;">
-                        Sign Out
-                    </button>
-                </form>
-            </div>
+        <div class="dashboard-panel" style="display: flex; flex-direction: column; gap: 20px;">
+            <h3 style="font-size: 18px; font-weight: 600; letter-spacing: -0.02em; color: var(--text-primary); margin: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Quick Actions</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                {% if request.user.is_seller %}
+                    <!-- Store Management -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.03);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="color: var(--accent); display: flex; align-items: center; justify-content: center; background: var(--accent-light); padding: 8px; border-radius: var(--radius-sm); width: 36px; height: 36px; flex-shrink: 0;">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                            </div>
+                            <span style="font-size: 14px; font-weight: 500; color: var(--text-primary);">Sell a Product</span>
+                        </div>
+                        <a href="{% url 'create_product' %}" class="btn btn-primary" style="padding: 6px 0; font-size: 12px; border-radius: var(--radius-md); height: 32px; font-weight: 500; width: 110px; text-align: center; justify-content: center;">
+                            Add Product
+                        </a>
+                    </div>
+                {% endif %}
 
-            <div style="border-top: 1px solid var(--border-color); width: 100%; padding-top: 20px;" class="action-box">
-                <div class="action-icon">
-                    <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <!-- Security Settings -->
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.03);">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="color: var(--text-primary); display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); padding: 8px; border-radius: var(--radius-sm); width: 36px; height: 36px; flex-shrink: 0;">
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        </div>
+                        <span style="font-size: 14px; font-weight: 500; color: var(--text-primary);">Change Password</span>
+                    </div>
+                    <a href="{% url 'update_password_view' %}" class="btn btn-secondary" style="padding: 6px 0; font-size: 12px; border-radius: var(--radius-md); height: 32px; font-weight: 500; width: 110px; text-align: center; justify-content: center;">
+                        Change
+                    </a>
                 </div>
-                <h4 style="font-size: 16px; font-weight: 600; margin-top: 8px;">Security Settings</h4>
-                <p style="font-size: 12px; color: var(--text-secondary); max-width: 180px;">Keep your account secure by updating your password.</p>
-                <a href="{% url 'update_password_view' %}" class="btn btn-secondary" style="width: 100%; margin-top: 10px; font-size: 13px; padding: 10px 16px;">
-                    Change Password
-                </a>
-            </div>
 
-            <div style="border-top: 1px solid var(--border-color); width: 100%; padding-top: 20px;" class="action-box">
-                <div class="action-icon" style="color: var(--error);">
-                    <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg>
+                <!-- Danger Zone -->
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="color: var(--error); display: flex; align-items: center; justify-content: center; background: var(--error-bg); padding: 8px; border-radius: var(--radius-sm); width: 36px; height: 36px; flex-shrink: 0;">
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg>
+                        </div>
+                        <span style="font-size: 14px; font-weight: 500; color: var(--text-primary);">Delete Account</span>
+                    </div>
+                    <a href="{% url 'delete_view' pk=user.pk %}" class="btn btn-secondary" style="padding: 6px 0; font-size: 12px; border-radius: var(--radius-md); height: 32px; border-color: rgba(255, 69, 58, 0.25); color: var(--error); font-weight: 500; width: 110px; text-align: center; justify-content: center;">
+                        Delete
+                    </a>
                 </div>
-                <h4 style="font-size: 16px; font-weight: 600; margin-top: 8px;">Danger Zone</h4>
-                <p style="font-size: 12px; color: var(--text-secondary); max-width: 180px;">Deactivate your store profile. This action can be undone later.</p>
-                <a href="{% url 'delete_view' pk=user.pk %}" class="btn btn-secondary" style="width: 100%; margin-top: 10px; font-size: 13px; padding: 10px 16px; border-color: rgba(255, 69, 58, 0.25); color: var(--error);">
-                    Delete Account
-                </a>
             </div>
         </div>
-
     </div>
 </div>
 {% endblock %}

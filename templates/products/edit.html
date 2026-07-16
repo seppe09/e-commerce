@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Product - Store{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<style>
+    /* Styling select dropdown for dark mode */
+    select.input-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        background-size: 16px;
+        padding-right: 40px;
+    }
+    
+    select.input-control option {
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+    }
+
+    /* Custom File Input Styling */
+    .file-input-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed var(--border-color);
+        border-radius: var(--radius-md);
+        padding: 24px;
+        background: rgba(255, 255, 255, 0.01);
+        cursor: pointer;
+        transition: var(--transition-smooth);
+    }
+
+    .file-input-wrapper:hover {
+        border-color: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .file-input-wrapper.error {
+        border-color: var(--error);
+    }
+
+    .file-input-wrapper input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .file-preview-icon {
+        color: var(--accent);
+        margin-bottom: 8px;
+        transition: var(--transition-smooth);
+    }
+
+    .file-input-wrapper:hover .file-preview-icon {
+        transform: translateY(-2px);
+    }
+
+    .file-upload-text {
+        font-size: 13px;
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    .file-upload-subtext {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-top: 4px;
+    }
+
+    .file-selected-name {
+        margin-top: 8px;
+        font-size: 12px;
+        color: var(--success);
+        font-weight: 500;
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card" style="max-width: 500px;">
+        <div class="auth-header">
+            <h2 class="auth-title">Edit Product</h2>
+            <p class="auth-subtitle">Update your product's listed information below.</p>
+        </div>
+
+        <form method="post" action="{% url 'product_edit' product.id %}" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            <!-- Category Field -->
+            <div class="form-group">
+                <label for="id_category" class="form-label">Category</label>
+                <select name="category" id="id_category" class="input-control {% if errors.category %}error{% endif %}">
+                    <option value="">Select a Category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" 
+                            {% if data %}
+                                {% if data.category|stringformat:"s" == category.id|stringformat:"s" %}selected{% endif %}
+                            {% else %}
+                                {% if product.category.id == category.id %}selected{% endif %}
+                            {% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                {% if errors.category %}
+                    <span class="error-text">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {{ errors.category }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Product Name -->
+            <div class="form-group">
+                <label for="id_name" class="form-label">Product Name</label>
+                <input type="text" name="name" id="id_name" 
+                       class="input-control {% if errors.name %}error{% endif %}" 
+                       placeholder="e.g., iPhone 15 Pro" value="{{ data.name|default:product.name }}">
+                {% if errors.name %}
+                    <span class="error-text">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {{ errors.name }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Price Field -->
+            <div class="form-group">
+                <label for="id_price" class="form-label">Price ($ USD)</label>
+                <input type="number" name="price" id="id_price" step="0.01" min="0.01"
+                       class="input-control {% if errors.price %}error{% endif %}" 
+                       placeholder="e.g., 999.99" value="{{ data.price|default:product.price|stringformat:".2f" }}">
+                {% if errors.price %}
+                    <span class="error-text">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {{ errors.price }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Description Field -->
+            <div class="form-group">
+                <label for="id_description" class="form-label">Description</label>
+                <textarea name="description" id="id_description" rows="4" 
+                          class="input-control {% if errors.description %}error{% endif %}" 
+                          placeholder="Provide a detailed description of the product...">{{ data.description|default:product.description }}</textarea>
+                {% if errors.description %}
+                    <span class="error-text">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {{ errors.description }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Image File Field & Preview -->
+            <div class="form-group">
+                <label class="form-label">Product Image</label>
+                
+                {% if product.image %}
+                    <div style="margin-bottom: 16px; display: flex; align-items: center; gap: 16px; background: rgba(255, 255, 255, 0.02); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                        <img src="{{ product.image.url }}" alt="Current Image" style="width: 70px; height: 70px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                        <div style="overflow: hidden;">
+                            <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); font-weight: 600;">Current Image</span>
+                            <p style="font-size: 13px; color: var(--text-primary); text-overflow: ellipsis; white-space: nowrap; overflow: hidden; margin-top: 2px;">{{ product.image.name|cut:"products/" }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="file-input-wrapper {% if errors.image %}error{% endif %}" id="fileWrapper">
+                    <input type="file" name="image" id="id_image" accept="image/*">
+                    <div class="file-preview-icon">
+                        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    </div>
+                    <span class="file-upload-text" id="uploadText">Upload New Image to Replace</span>
+                    <span class="file-upload-subtext">Leave empty to keep current image</span>
+                    <span class="file-selected-name" id="fileName"></span>
+                </div>
+                {% if errors.image %}
+                    <span class="error-text">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {{ errors.image }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Action buttons -->
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 28px;">
+                <button type="submit" class="btn btn-primary auth-submit-btn" style="margin-top: 0; height: 46px;">
+                    Save Changes
+                </button>
+                <a href="{% url 'product_list' %}" class="btn btn-secondary" style="text-align: center; display: inline-flex; align-items: center; justify-content: center; height: 46px;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const fileInput = document.getElementById('id_image');
+    const fileWrapper = document.getElementById('fileWrapper');
+    const uploadText = document.getElementById('uploadText');
+    const fileNameElement = document.getElementById('fileName');
+
+    fileInput.addEventListener('change', function(e) {
+        if (fileInput.files && fileInput.files.length > 0) {
+            const fileName = fileInput.files[0].name;
+            uploadText.innerText = "Change Image Selection";
+            fileNameElement.innerText = "Selected replacement: " + fileName;
+            fileNameElement.style.display = "block";
+            fileWrapper.style.borderColor = "var(--success)";
+        } else {
+            uploadText.innerText = "Upload New Image to Replace";
+            fileNameElement.style.display = "none";
+            fileWrapper.style.borderColor = "var(--border-color)";
+        }
+    });
+</script>
+{% endblock %}

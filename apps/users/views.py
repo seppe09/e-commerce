@@ -142,7 +142,7 @@ class UserLoginView(View):
                 user = authenticate(request, username=username_or_email, password=password)
         
             if user is not None:
-                if user.deleted_at != True:
+                if user.is_deleted != True:
                     login(request, user)
                     return redirect("dashboard_view")
                 else:
@@ -199,8 +199,9 @@ class UserAccountDeletionView(LoginRequiredMixin, View):
         valid = authenticate(request, username=username, password=password)
 
         if valid:
-            user.deleted_at = True
-            user.save(update_fields=["deleted_at"])
+            user.is_deleted = True
+            user.soft_delete()
+            user.save(update_fields=["is_deleted", "deleted_at"])
             logout(request)
             messages.success(request, "Account deletion was successful.")
             return redirect("login_view")
@@ -241,9 +242,10 @@ class UserAccountRecoveryView(View):
             if user_obj is not None:
                 user = authenticate(request, username=user_obj.username, password=password)
                 if user is not None:
-                    if user.deleted_at == True:
-                        user.deleted_at = False
-                        user.save(update_fields=["deleted_at"])
+                    if user.is_deleted == True:
+                        user.is_deleted = False
+                        user.restore()
+                        user.save(update_fields=["is_deleted", "deleted_at"])
                         login(request, user)
                         messages.success(request, "Account recovery was successful. You are now logged in.")
                         return redirect("dashboard_view")
