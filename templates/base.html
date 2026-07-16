@@ -30,7 +30,7 @@
                     <li><a href="{% url 'product_list' %}" class="nav-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">Products</a></li>
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'dashboard_view' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard_view' %}active{% endif %}">Dashboard</a></li>
-                        <li><span class="nav-link" style="opacity: 0.6; cursor: default;">Hello, {{ user.username }}</span></li>
+                        <li><span class="nav-link" style="opacity: 0.6; cursor: default;">Welcome, {{ user.username }}</span></li>
                         <li>
                             <form action="{% url 'logout_view' %}" method="post" style="display: inline;">
                                 {% csrf_token %}
@@ -47,10 +47,15 @@
 
         <!-- Messages / Alerts -->
         {% if messages %}
-            <div style="max-width: 1024px; width: 100%; margin: 16px auto 0; padding: 0 22px;">
+            <div style="max-width: 100%; width: 100%; margin: 16px auto 0; padding: 0 6%;">
                 {% for message in messages %}
                     <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}">
-                        {{ message }}
+                        {% if message.tags == 'error' %}
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        {% else %}
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        {% endif %}
+                        <span>{{ message }}</span>
                     </div>
                 {% endfor %}
             </div>

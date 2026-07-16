@@ -1,9 +1,9 @@
 /* Dashboard Stylesheet */
 .dashboard-container {
-    max-width: 1024px;
+    max-width: 100%;
     width: 100%;
     margin: 0 auto;
-    padding: 40px 22px;
+    padding: 40px 6%;
     flex: 1;
     position: relative;
     z-index: 1;

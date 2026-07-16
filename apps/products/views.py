@@ -173,4 +173,76 @@ class ProductEditView(LoginRequiredMixin, View):
         return redirect("product_list")
 
 
+class ProductDeleteView(LoginRequiredMixin, View):
+    login_url = "login_view"
+    template_name = "products/delete.html"
+
+    def get(self, request, pk):
+        if not request.user.is_seller:
+            return redirect("dashboard_view")
         
+        # Ensure we only fetch active, non-deleted products
+        product = get_object_or_404(Product, pk=pk, seller=request.user, is_deleted=False)
+
+        context = {
+            "product": product
+        }
+
+        return render(request, self.template_name, context)
+
+    
+    def post(self, request, pk):
+        if not request.user.is_seller:
+            return redirect("dashboard_view")
+        
+        # Ensure we only fetch active, non-deleted products
+        product = get_object_or_404(Product, pk=pk, seller=request.user, is_deleted=False)
+
+        confirmed = request.POST.get("confirmation", "")
+
+        if confirmed:
+            product.is_deleted = True
+            product.soft_delete()
+            product.save(update_fields=["is_deleted", "deleted_at"])
+            messages.success(request, "Product deleted successfully.")
+            return redirect("product_list")
+        
+        messages.error(request, "Confirmation failed, No product is deleted.")
+        return redirect("product_list")
+
+
+class ProductRecoveryView(LoginRequiredMixin, View):
+    login_url = "login_view"
+    template_name = "products/recovery.html"
+
+    def get(self, request, pk):
+        if not request.user.is_seller:
+            return redirect("dashboard_view")
+
+        # Ensure we fetch the deleted product
+        product = get_object_or_404(Product, pk=pk, seller=request.user, is_deleted=True)
+
+        context = {
+            "product": product
+        }
+        
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk):
+        if not request.user.is_seller:
+            return redirect("dashboard_view")
+
+        # Ensure we fetch the deleted product
+        product = get_object_or_404(Product, pk=pk, seller=request.user, is_deleted=True)
+
+        confirmed = request.POST.get("confirmation", "")
+
+        if confirmed:
+            product.is_deleted = False
+            product.restore()
+            product.save(update_fields=["is_deleted", "deleted_at"])
+            messages.success(request, "Product recovered successfully.")
+            return redirect("product_list")
+
+        messages.error(request, "Confirmation failed, No product is recovered.")
+        return redirect("product_list")

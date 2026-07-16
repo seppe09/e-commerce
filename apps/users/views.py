@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model, login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from apps.products.models import Product
 
 User = get_user_model()
 
@@ -164,7 +165,17 @@ class UserDashboardView(LoginRequiredMixin, View):
     template_name = "users/dashboard.html"
 
     def get(self, request):
-        return render(request, self.template_name)
+
+        products = Product.objects.filter(is_deleted=False).order_by("-created_at")
+
+        deleted_products = Product.objects.filter(is_deleted=True).order_by("-deleted_at")
+
+        context = {
+            "products": products,
+            "deleted_products": deleted_products
+        }
+
+        return render(request, self.template_name, context)
 
 
 class UserLogoutView(View):

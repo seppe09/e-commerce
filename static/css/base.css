@@ -95,8 +95,8 @@ a:hover {
 
 .nav-container {
     width: 100%;
-    max-width: 1024px;
-    padding: 0 22px;
+    max-width: 100%;
+    padding: 0 6%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -191,7 +191,7 @@ a:hover {
 footer {
     border-top: 1px solid var(--border-color);
     background-color: var(--bg-primary);
-    padding: 30px 22px;
+    padding: 30px 6%;
     font-size: 11px;
     color: var(--text-tertiary);
     text-align: center;
@@ -200,7 +200,7 @@ footer {
 }
 
 .footer-content {
-    max-width: 1024px;
+    max-width: 100%;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -293,3 +293,65 @@ footer {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-tertiary);
 }
+
+/* Global Alerts (Premium Apple-style Glassmorphism) */
+.alert {
+    padding: 14px 20px;
+    border-radius: var(--radius-md);
+    font-size: 13.5px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    line-height: 1.4;
+    backdrop-filter: blur(var(--blur-glass));
+    -webkit-backdrop-filter: blur(var(--blur-glass));
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    animation: alertAppear 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    position: relative;
+    overflow: hidden;
+    z-index: 10;
+}
+
+@keyframes alertAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* glowing bar indicator on the left edge */
+.alert::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 4px;
+}
+
+.alert-danger {
+    background-color: rgba(255, 69, 58, 0.08);
+    border: 1px solid rgba(255, 69, 58, 0.18);
+    color: #ff453a;
+}
+.alert-danger::before {
+    background-color: var(--error);
+    box-shadow: 0 0 10px var(--error);
+}
+
+.alert-success {
+    background-color: rgba(48, 209, 88, 0.08);
+    border: 1px solid rgba(48, 209, 88, 0.18);
+    color: #30d158;
+}
+.alert-success::before {
+    background-color: var(--success);
+    box-shadow: 0 0 10px var(--success);
+}
+
