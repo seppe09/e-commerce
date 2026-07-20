@@ -1,0 +1,19 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: MySQL_DB 
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Seppe@2003 
+      MYSQL_DATABASE: ecommerce 
+      MYSQL_USER: seppe 
+      MYSQL_PASSWORD: 12345678 
+    ports:
+      - "3306:3306"
+    volumes:
+      # This binds your exact local folder directly to the container
+      - /home/seppe/Docker/docker-data/MySQL_DB:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
